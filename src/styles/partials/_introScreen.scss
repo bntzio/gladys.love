@@ -1,0 +1,28 @@
+.introScreen {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: black;
+  color: white;
+  padding: 3rem 4rem;
+  font-size: .9rem;
+  @media(min-width: 768px) {
+    font-size: 1rem;
+  }
+
+  .instructions {
+    h1 {
+      font-weight: 500;
+    }
+    p {
+      line-height: 1.9rem;
+    }
+    span:hover {
+      cursor: pointer;
+    }
+    width: 100%;
+    @media(min-width: 768px) {
+      width: 50%;
+    }
+  }
+}
