@@ -51,6 +51,7 @@ class GameScreen extends React.Component {
             <form onSubmit={(ev) => this.checkAnswer(ev)}>
               <label htmlFor='firstQuestion'>Question #1</label><br />
               <input
+                autoFocus
                 name='firstQuestion'
                 type='text'
                 value={this.state.currentAnswer}
@@ -66,6 +67,7 @@ class GameScreen extends React.Component {
             <form onSubmit={(ev) => this.checkAnswer(ev)}>
               <label htmlFor='secondQuestion'>Question #2</label><br />
               <input
+                autoFocus
                 name='secondQuestion'
                 type='text'
                 value={this.state.currentAnswer}
@@ -81,6 +83,7 @@ class GameScreen extends React.Component {
             <form onSubmit={(ev) => this.checkAnswer(ev)}>
               <label htmlFor='thirdQuestion'>Question #3</label><br />
               <input
+                autoFocus
                 name='thirdQuestion'
                 type='text'
                 value={this.state.currentAnswer}
@@ -96,6 +99,7 @@ class GameScreen extends React.Component {
             <form onSubmit={(ev) => this.checkAnswer(ev)}>
               <label htmlFor='fourthQuestion'>Question #4</label><br />
               <input
+                autoFocus
                 name='fourthQuestion'
                 type='text'
                 value={this.state.currentAnswer}
@@ -111,6 +115,7 @@ class GameScreen extends React.Component {
             <form onSubmit={(ev) => this.checkAnswer(ev)}>
               <label htmlFor='fifthQuestion'>Question #5</label><br />
               <input
+                autoFocus
                 name='fifthQuestion'
                 type='text'
                 value={this.state.currentAnswer}

@@ -10,9 +10,17 @@ class Main extends React.Component {
   }
   renderScreen (hasWon) {
     if (hasWon === true) {
-      return <FinalScreen />
+      return (
+        <main className='finalScreen'>
+          <FinalScreen />
+        </main>
+      )
     }
-    return <GameScreen />
+    return (
+      <main className='gameScreen'>
+        <GameScreen />
+      </main>
+    )
   }
   render () {
     const hasWon = this.state.won

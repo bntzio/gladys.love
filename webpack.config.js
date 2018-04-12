@@ -24,6 +24,10 @@ module.exports = {
         },
         test: /\.js|.jsx?$/,
         exclude: /(node_modules)/
+      },
+      {
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+        test: /\.(s*)css$/
       }
     ]
   },
