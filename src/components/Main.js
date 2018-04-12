@@ -8,7 +8,7 @@ class Main extends React.Component {
     super(props)
     this.state = { won: false }
   }
-  renderFinalScreen (hasWon) {
+  renderScreen (hasWon) {
     if (hasWon === true) {
       return <FinalScreen />
     }
@@ -16,7 +16,7 @@ class Main extends React.Component {
   }
   render () {
     const hasWon = this.state.won
-    return this.renderFinalScreen(hasWon)
+    return this.renderScreen(hasWon)
   }
 }
 
