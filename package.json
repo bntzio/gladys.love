@@ -1,0 +1,9 @@
+{
+  "name": "gladys-love",
+  "version": "0.1.0",
+  "description": "To my girlfriend w/love",
+  "main": "index.js",
+  "repository": "git@github.com:bntzio/gladys.love.git",
+  "author": "Enrique Benitez <hello@bntz.io>",
+  "license": "MIT"
+}
