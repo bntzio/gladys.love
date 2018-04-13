@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 
 import firebase, { firebaseRef } from './../firebase'
 
@@ -34,7 +35,7 @@ class GameScreen extends React.Component {
     // is loading
     this.setState({ isLoading: true })
     // the current user answer
-    const userAnswer = this.state.currentAnswer
+    const userAnswer = _.deburr(this.state.currentAnswer)
     // get game questions to get and compare the answers
     const questionsRef = firebaseRef.child('questions')
     questionsRef.once('value').then((snapshot) => {
@@ -46,7 +47,7 @@ class GameScreen extends React.Component {
         })
       })
       const { questionAt } = this.state
-      const correctAnswer = parsedQuestions[questionAt - 1].answer
+      const correctAnswer = _.deburr(parsedQuestions[questionAt - 1].answer)
       if (userAnswer.toLowerCase().includes(correctAnswer.toLowerCase())) {
         this.setState({ isLoading: false })
         document.getElementById('correctAnswerNotice').style.display = 'block'
