@@ -51,16 +51,33 @@
       margin-top: 0;
     }
     &__question {
+      &__input {
+        display: flex;
+        #loadingSpinner {
+          order: 0;
+          & > div {
+            width: .8rem;
+            height: .8rem;
+            margin-top: .8rem;
+            margin-right: 1rem;
+            margin-left: -2rem;
+          }
+        }
+        input {
+          order: 1;
+        }
+      }
+
       #correctAnswerNotice {
         display: none;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
         font-size: .8rem;
         font-weight: 500;
         color: #79FFE1;
       }
       #incorrectAnswerNotice {
         display: none;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
         font-size: .8rem;
         font-weight: 500;
         color: red;
