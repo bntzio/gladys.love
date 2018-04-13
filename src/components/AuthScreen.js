@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'production') {
   emailClue = '**a*ys.a****ez**@hotmail.com'
 }
 
-class PreGameScreen extends React.Component {
+class AuthScreen extends React.Component {
   handleEmailLink (ev) {
     ev.preventDefault()
     const email = ev.target.email.value
@@ -57,4 +57,4 @@ class PreGameScreen extends React.Component {
   }
 }
 
-export default PreGameScreen
+export default AuthScreen

@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 
 import IntroScreen from './../components/IntroScreen'
-import PreGameScreen from './../components/PreGameScreen'
+import AuthScreen from './../components/AuthScreen'
 import GameScreen from './../components/GameScreen'
 import FinalScreen from './../components/FinalScreen'
 
@@ -53,7 +53,7 @@ class Main extends React.Component {
     return (
       <Switch>
         <Route exact path='/' component={IntroScreen} />
-        <Route path='/auth' component={PreGameScreen} />
+        <Route path='/auth' component={AuthScreen} />
         <Route path='/game' component={GameScreen} onEnter={this.handleAuth} />
         <Route path='/gameover' component={FinalScreen} />
       </Switch>
