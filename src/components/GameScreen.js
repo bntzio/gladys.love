@@ -8,7 +8,6 @@ class GameScreen extends React.Component {
     this.state = { questionAt: 1, currentAnswer: '' }
   }
   handleLogout () {
-    console.log(process.env.NODE_ENV)
     firebase.auth().signOut().then(() => {
       if (process.env.NODE_ENV === 'production') {
         window.location.href = 'https://gladys.love'

@@ -11,11 +11,64 @@
   }
 
   .instructions {
+    #emailSentNotice {
+      color: #79FFE1;
+      display: none;
+      font-size: .8rem;
+      font-weight: 500;
+      margin-top: 1rem;
+      transition: .4s ease-in-out all;
+    }
+    #emailErrorNotice {
+      color: red;
+      display: none;
+      font-size: .8rem;
+      font-weight: 500;
+      margin-top: 1rem;
+      transition: .4s ease-in-out all;
+    }
     p {
       line-height: 1.9rem;
     }
     span {
       color: #79FFE1;
+    }
+    form {
+      margin-top: 2rem;
+
+      input {
+        background: transparent;
+        color: white;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        margin-right: 1rem;
+        width: 100%;
+        @media (min-width: 768px) {
+          width: auto;
+        }
+      }
+      button {
+        background: transparent;
+        color: white;
+        text-transform: uppercase;
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 500;
+        font-size: .8rem;
+        border: 2px solid white;
+        outline: none;
+        padding: .4rem .8rem;
+        transition: .4s ease-in all;
+        margin-top: 1rem;
+        @media (min-width: 768px) {
+          margin-top: 0;
+        }
+        &:hover {
+          cursor: pointer;
+          background: white;
+          color: black;
+        }
+      }
     }
     width: 100%;
     @media(min-width: 768px) {
