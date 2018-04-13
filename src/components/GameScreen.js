@@ -1,11 +1,21 @@
 import React from 'react'
 
-import firebase from './../firebase'
+import firebase, { firebaseRef } from './../firebase'
 
 class GameScreen extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { questionAt: 1, currentAnswer: '' }
+    this.state = {
+      lives: null,
+      question: '',
+      questionAt: null,
+      currentAnswer: '',
+      loading: false
+    }
+  }
+  componentWillMount () {
+    this.updateQuestion()
+    this.getLives()
   }
   handleLogout () {
     firebase.auth().signOut().then(() => {
@@ -21,132 +31,135 @@ class GameScreen extends React.Component {
   }
   checkAnswer (ev) {
     ev.preventDefault()
-    const answer = this.state.currentAnswer
-    const questionNumber = this.state.questionAt
-    switch (questionNumber) {
-      case 1:
-        if (answer === 'ans1') {
-          this.setState({ questionAt: 2 })
-          return this.setState({ currentAnswer: '' })
-        } else {
-          return this.setState({ currentAnswer: '' })
-        }
-      case 2:
-        if (answer === 'ans2') {
-          this.setState({ questionAt: 3 })
-          return this.setState({ currentAnswer: '' })
-        } else {
-          return this.setState({ currentAnswer: '' })
-        }
-      case 3:
-        if (answer === 'ans3') {
-          this.setState({ questionAt: 4 })
-          return this.setState({ currentAnswer: '' })
-        } else {
-          return this.setState({ currentAnswer: '' })
-        }
-      case 4:
-        if (answer === 'ans4') {
-          this.setState({ questionAt: 5 })
-          return this.setState({ currentAnswer: '' })
-        } else {
-          return this.setState({ currentAnswer: '' })
-        }
-    }
+    // is loading
+    this.setState({ isLoading: true })
+    // the current user answer
+    const userAnswer = this.state.currentAnswer
+    // get game questions to get and compare the answers
+    const questionsRef = firebaseRef.child('questions')
+    questionsRef.once('value').then((snapshot) => {
+      const questions = snapshot.val() || {}
+      const parsedQuestions = []
+      Object.keys(questions).forEach((question) => {
+        parsedQuestions.push({
+          ...questions[question]
+        })
+      })
+      const { questionAt } = this.state
+      const correctAnswer = parsedQuestions[questionAt - 1].answer
+      if (userAnswer.toLowerCase().includes(correctAnswer.toLowerCase())) {
+        this.setState({ isLoading: false })
+        document.getElementById('correctAnswerNotice').style.display = 'block'
+        setTimeout(() => {
+          this.setState({ currentAnswer: '' })
+          document.getElementById('correctAnswerNotice').style.display = 'none'
+          this.updateUserProgress()
+          this.updateQuestion()
+        }, 2000)
+      } else {
+        this.setState({ currentAnswer: '' })
+        document.getElementById('incorrectAnswerNotice').style.display = 'block'
+        this.destroyLife()
+        this.updateLivesCounter()
+        setTimeout(() => {
+          document.getElementById('incorrectAnswerNotice').style.display = 'none'
+        }, 3000)
+      }
+    })
   }
-  renderQuestion (questionNumber) {
-    switch (questionNumber) {
-      case 1:
-        return (
-          <div className='questions__question'>
-            <form onSubmit={(ev) => this.checkAnswer(ev)}>
-              <label htmlFor='firstQuestion'>Question #1</label><br />
-              <input
-                autoFocus
-                name='firstQuestion'
-                type='text'
-                value={this.state.currentAnswer}
-                onChange={(ev) => this.updateAnswer(ev.target.value)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          </div>
-        )
-      case 2:
-        return (
-          <div className='questions__question'>
-            <form onSubmit={(ev) => this.checkAnswer(ev)}>
-              <label htmlFor='secondQuestion'>Question #2</label><br />
-              <input
-                autoFocus
-                name='secondQuestion'
-                type='text'
-                value={this.state.currentAnswer}
-                onChange={(ev) => this.updateAnswer(ev.target.value)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          </div>
-        )
-      case 3:
-        return (
-          <div className='questions__question'>
-            <form onSubmit={(ev) => this.checkAnswer(ev)}>
-              <label htmlFor='thirdQuestion'>Question #3</label><br />
-              <input
-                autoFocus
-                name='thirdQuestion'
-                type='text'
-                value={this.state.currentAnswer}
-                onChange={(ev) => this.updateAnswer(ev.target.value)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          </div>
-        )
-      case 4:
-        return (
-          <div className='questions__question'>
-            <form onSubmit={(ev) => this.checkAnswer(ev)}>
-              <label htmlFor='fourthQuestion'>Question #4</label><br />
-              <input
-                autoFocus
-                name='fourthQuestion'
-                type='text'
-                value={this.state.currentAnswer}
-                onChange={(ev) => this.updateAnswer(ev.target.value)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          </div>
-        )
-      case 5:
-        return (
-          <div className='questions__question'>
-            <form onSubmit={(ev) => this.checkAnswer(ev)}>
-              <label htmlFor='fifthQuestion'>Question #5</label><br />
-              <input
-                autoFocus
-                name='fifthQuestion'
-                type='text'
-                value={this.state.currentAnswer}
-                onChange={(ev) => this.updateAnswer(ev.target.value)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          </div>
-        )
-    }
+  updateUserProgress () {
+    const user = firebase.auth().currentUser
+    const userRef = firebaseRef.child(`users/${user.uid}/progress`)
+    userRef.update({
+      questionAt: this.state.questionAt + 1
+    })
+  }
+  destroyLife () {
+    const user = firebase.auth().currentUser
+    const userRef = firebaseRef.child(`users/${user.uid}/progress`)
+    userRef.update({
+      lives: this.state.lives - 1
+    })
+  }
+  getLives () {
+    // get user progress
+    const user = firebase.auth().currentUser
+    const userRef = firebaseRef.child(`users/${user.uid}`)
+    userRef.once('value').then((snapshot) => {
+      const progress = snapshot.val() || {}
+      const parsedProgress = []
+      Object.keys(progress).forEach((item) => {
+        parsedProgress.push({
+          ...progress[item]
+        })
+      })
+      this.setState({ lives: parsedProgress[0].lives })
+    })
+  }
+  updateLivesCounter () {
+    this.getLives()
+  }
+  updateQuestion () {
+    // get user progress
+    const user = firebase.auth().currentUser
+    const userRef = firebaseRef.child(`users/${user.uid}`)
+    userRef.once('value').then((snapshot) => {
+      const progress = snapshot.val() || {}
+      const parsedProgress = []
+      Object.keys(progress).forEach((item) => {
+        parsedProgress.push({
+          ...progress[item]
+        })
+      })
+      this.setState({ questionAt: parsedProgress[0].questionAt })
+    })
+    // get game questions
+    const questionsRef = firebaseRef.child('questions')
+    questionsRef.once('value').then((snapshot) => {
+      const questions = snapshot.val() || {}
+      const parsedQuestions = []
+      Object.keys(questions).forEach((question) => {
+        parsedQuestions.push({
+          ...questions[question]
+        })
+      })
+      const { questionAt } = this.state
+      this.setState({ question: parsedQuestions[questionAt - 1].question })
+    })
   }
   render () {
-    const questionNumber = this.state.questionAt
+    const { questionAt } = this.state
+    const { question } = this.state
+    const { lives } = this.state
+
     return (
       <section className='gameScreen'>
-        <div className='logout'>
-          <a onClick={this.handleLogout}>Logout</a>
+        <div className='menu'>
+          <div className='menu__level'>
+            <p>⭐ Nivel: {questionAt}/100</p>
+          </div>
+          <div className='menu__lives'>
+            <p>❤️ {lives} vidas</p>
+          </div>
+          <div className='menu__logout'>
+            <a onClick={this.handleLogout}>🚪 Salir</a>
+          </div>
         </div>
         <div className='questions'>
-          {this.renderQuestion(questionNumber)}
+          <div className='questions__question'>
+            <form onSubmit={(ev) => this.checkAnswer(ev)}>
+              <label>{question}</label><br />
+              <input
+                autoFocus
+                type='text'
+                value={this.state.currentAnswer}
+                onChange={(ev) => this.updateAnswer(ev.target.value)}
+              />
+              <button type='submit'>Submit</button>
+            </form>
+            <p id='correctAnswerNotice'>¡Tu respuesta es correcta!</p>
+            <p id='incorrectAnswerNotice'>¡Tu respuesta es incorrecta!</p>
+          </div>
         </div>
       </section>
     )

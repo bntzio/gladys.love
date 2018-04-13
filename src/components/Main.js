@@ -10,7 +10,7 @@ import PreGameScreen from './../components/PreGameScreen'
 import GameScreen from './../components/GameScreen'
 import FinalScreen from './../components/FinalScreen'
 
-import firebase from './../firebase'
+import firebase, { firebaseRef } from './../firebase'
 
 class Main extends React.Component {
   handleAuth () {
@@ -35,6 +35,15 @@ class Main extends React.Component {
       }
       firebase.auth().signInWithEmailLink(email, window.location.href)
         .then((result) => {
+          const { isNewUser } = result.additionalUserInfo
+          if (isNewUser) {
+            const user = firebase.auth().currentUser
+            firebaseRef.child(`users/${user.uid}/progress`).set({
+              hasWon: false,
+              lives: 50,
+              questionAt: 1
+            })
+          }
           window.localStorage.removeItem('emailForSignIn')
         })
         .catch((error) => console.log(error))
