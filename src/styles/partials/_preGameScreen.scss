@@ -1,6 +1,6 @@
-.introScreen {
+.preGameScreen {
   display: flex;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   background: black;
   color: white;
@@ -11,14 +11,11 @@
   }
 
   .instructions {
-    h1 {
-      font-weight: 500;
-    }
     p {
       line-height: 1.9rem;
     }
-    a {
-      text-decoration: none;
+    span {
+      color: #79FFE1;
     }
     width: 100%;
     @media(min-width: 768px) {

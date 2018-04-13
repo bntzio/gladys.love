@@ -1,45 +1,55 @@
 import React from 'react'
+import {
+  Switch,
+  Route,
+  withRouter
+} from 'react-router-dom'
 
 import IntroScreen from './../components/IntroScreen'
+import PreGameScreen from './../components/PreGameScreen'
 import GameScreen from './../components/GameScreen'
 import FinalScreen from './../components/FinalScreen'
 
+import firebase from './../firebase'
+
 class Main extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = { won: false, started: false }
-    this.handleStartGame = this.handleStartGame.bind(this)
-  }
-  handleStartGame () {
-    this.setState({ started: true })
-  }
-  renderScreen (hasWon, hasStarted) {
-    if (hasWon === true) {
-      return (
-        <main className='finalScreen'>
-          <FinalScreen />
-        </main>
-      )
-    } else {
-      if (hasStarted === true) {
-        return (
-          <main className='gameScreen'>
-            <GameScreen />
-          </main>
-        )
+  handleAuth () {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        if (user.email === process.env.PLAYER_EMAIL) {
+          this.props.history.push('/game')
+        } else {
+          this.props.history.push('/')
+        }
       }
-      return (
-        <main className='introScreen'>
-          <IntroScreen startGame={this.handleStartGame} />
-        </main>
-      )
+    })
+  }
+  componentWillMount () {
+    this.handleAuth()
+  }
+  componentDidMount () {
+    if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+      let email = window.localStorage.getItem('emailForSignIn')
+      if (!email) {
+        email = window.prompt('¿Cuál es tu email?')
+      }
+      firebase.auth().signInWithEmailLink(email, window.location.href)
+        .then((result) => {
+          window.localStorage.removeItem('emailForSignIn')
+        })
+        .catch((error) => console.log(error))
     }
   }
   render () {
-    const hasWon = this.state.won
-    const hasStarted = this.state.started
-    return this.renderScreen(hasWon, hasStarted)
+    return (
+      <Switch>
+        <Route exact path='/' component={IntroScreen} />
+        <Route path='/auth' component={PreGameScreen} />
+        <Route path='/game' component={GameScreen} onEnter={this.handleAuth} />
+        <Route path='/gameover' component={FinalScreen} />
+      </Switch>
+    )
   }
 }
 
-export default Main
+export default withRouter(Main)

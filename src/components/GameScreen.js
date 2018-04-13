@@ -1,9 +1,21 @@
 import React from 'react'
 
+import firebase from './../firebase'
+
 class GameScreen extends React.Component {
   constructor (props) {
     super(props)
     this.state = { questionAt: 1, currentAnswer: '' }
+  }
+  handleLogout () {
+    console.log(process.env.NODE_ENV)
+    firebase.auth().signOut().then(() => {
+      if (process.env.NODE_ENV === 'production') {
+        window.location.href = 'https://gladys.love'
+      } else {
+        window.location.href = 'http://localhost:3000'
+      }
+    }).catch((e) => console.log(e))
   }
   updateAnswer (answer) {
     this.setState({ currentAnswer: answer })
@@ -130,8 +142,13 @@ class GameScreen extends React.Component {
   render () {
     const questionNumber = this.state.questionAt
     return (
-      <section className='questions'>
-        {this.renderQuestion(questionNumber)}
+      <section className='gameScreen'>
+        <div className='logout'>
+          <a onClick={this.handleLogout}>Logout</a>
+        </div>
+        <div className='questions'>
+          {this.renderQuestion(questionNumber)}
+        </div>
       </section>
     )
   }

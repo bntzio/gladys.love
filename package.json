@@ -9,13 +9,27 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "now": {
+    "alias": "gladys.love",
+    "files": [
+      "config",
+      "src",
+      "index.html",
+      "webpack.config.js",
+      "yarn.lock"
+    ]
+  },
   "scripts": {
-    "start": "webpack && serve",
+    "start": "serve",
+    "build": "NODE_ENV=production webpack",
+    "now": "now && now alias",
     "dev": "concurrently \"webpack -d --watch\" \"webpack-dev-server --colors --quiet\""
   },
   "dependencies": {
+    "firebase": "^4.12.1",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
+    "react-router-dom": "^4.2.2",
     "serve": "^6.5.5"
   },
   "devDependencies": {
@@ -36,6 +50,7 @@
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-react": "^7.7.0",
     "eslint-plugin-standard": "^3.0.1",
+    "node-env-file": "^0.1.8",
     "node-sass": "^4.8.3",
     "sass-loader": "^6.0.7",
     "standard": "^11.0.1",
