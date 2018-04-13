@@ -113,19 +113,28 @@ class GameScreen extends React.Component {
       })
       this.setState({ questionAt: parsedProgress[0].questionAt })
     })
-    // get game questions
-    const questionsRef = firebaseRef.child('questions')
-    questionsRef.once('value').then((snapshot) => {
-      const questions = snapshot.val() || {}
-      const parsedQuestions = []
-      Object.keys(questions).forEach((question) => {
-        parsedQuestions.push({
-          ...questions[question]
-        })
+    // end of game?
+    const { questionAt } = this.state
+    if (questionAt === 35) { // 35 for now, then 100
+      this.setState({
+        question: 'Has llegado a la última pregunta, por favor espera mientras añadimos las demás 😄'
       })
-      const { questionAt } = this.state
-      this.setState({ question: parsedQuestions[questionAt - 1].question })
-    })
+      document.getElementById('answerInput').style.display = 'none'
+      document.getElementById('answerButton').style.display = 'none'
+    } else {
+      // get game questions
+      const questionsRef = firebaseRef.child('questions')
+      questionsRef.once('value').then((snapshot) => {
+        const questions = snapshot.val() || {}
+        const parsedQuestions = []
+        Object.keys(questions).forEach((question) => {
+          parsedQuestions.push({
+            ...questions[question]
+          })
+        })
+        this.setState({ question: parsedQuestions[questionAt - 1].question })
+      })
+    }
   }
   render () {
     const { questionAt } = this.state
@@ -150,12 +159,13 @@ class GameScreen extends React.Component {
             <form onSubmit={(ev) => this.checkAnswer(ev)}>
               <label>{question}</label><br />
               <input
+                id='answerInput'
                 autoFocus
                 type='text'
                 value={this.state.currentAnswer}
                 onChange={(ev) => this.updateAnswer(ev.target.value)}
               />
-              <button type='submit'>Submit</button>
+              <button type='submit' id='answerButton'>Submit</button>
             </form>
             <p id='correctAnswerNotice'>¡Tu respuesta es correcta!</p>
             <p id='incorrectAnswerNotice'>¡Tu respuesta es incorrecta!</p>
